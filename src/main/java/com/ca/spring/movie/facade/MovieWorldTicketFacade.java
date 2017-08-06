@@ -4,14 +4,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.ca.spring.movie.bo.MovieWorldTicketBO;
 import com.ca.spring.movie.exception.MovieWorldException;
 import com.ca.spring.movie.vo.TicketVO;
 
+@Component
 public class MovieWorldTicketFacade {
 
 	private MovieWorldTicketBO movieWorldTicketBO;
 
+	@Autowired
 	public MovieWorldTicketFacade(MovieWorldTicketBO movieWorldTicketBO) {
 		this.movieWorldTicketBO = movieWorldTicketBO;
 	}

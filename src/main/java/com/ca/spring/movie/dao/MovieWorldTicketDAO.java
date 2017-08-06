@@ -4,15 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.ca.spring.movie.exception.MovieWorldException;
 import com.ca.spring.movie.vo.TicketVO;
 
+@Repository
 public class MovieWorldTicketDAO {
 
 	private JdbcTemplate jdbcTemplate;
 
+	@Autowired
 	public MovieWorldTicketDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
@@ -67,10 +71,12 @@ public class MovieWorldTicketDAO {
 		checkMovieExistWhileBooking(movieCode, ticketClass, dateStr, time);
 
 		String updateAvailableSeatsSql = "update TICKET_AVAILABILITY ta, (select ta1.TICKET_AVAILABILITY_ID as TICKET_AVAILABILITY_ID from TICKET_AVAILABILITY ta1 join MOVIE_TIME mt on ta1.MOVIE_TIME_ID = mt.MOVIE_TIME_ID and mt.MOVIE_CODE = ? and ta1.TICKET_CLASS = ? and mt.SHOW_DATE = ? and mt.SHOW_TIME = ?) as p set ta.AVAILABLE_TICKETS = (ta.AVAILABLE_TICKETS - ?) where ta.TICKET_AVAILABILITY_ID = p.TICKET_AVAILABILITY_ID and (ta.AVAILABLE_TICKETS - ?) >= 0";
-		Object[] updateAvailableSeatsArgs = new Object[] { movieCode, ticketClass, dateStr, time, requiredSeat, requiredSeat };
+		Object[] updateAvailableSeatsArgs = new Object[] { movieCode, ticketClass, dateStr, time, requiredSeat,
+				requiredSeat };
 		int i = this.jdbcTemplate.update(updateAvailableSeatsSql, updateAvailableSeatsArgs);
 		if (i == 0) {
-			String str = "Required number of seat not available either movie is full or available seat is less than required seat for movie " + movieCode + " running at " + date + " " + time;
+			String str = "Required number of seat not available either movie is full or available seat is less than required seat for movie "
+					+ movieCode + " running at " + date + " " + time;
 			throw new MovieWorldException(str);
 		}
 	}

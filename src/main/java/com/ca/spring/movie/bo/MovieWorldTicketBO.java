@@ -2,10 +2,17 @@ package com.ca.spring.movie.bo;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ca.spring.movie.dao.MovieWorldTicketDAO;
 import com.ca.spring.movie.exception.MovieWorldException;
 import com.ca.spring.movie.vo.TicketVO;
 
+@Service
+@Transactional(rollbackFor=Throwable.class)
 public class MovieWorldTicketBO {
 	
 	private MovieWorldTicketDAO movieWorldTicketDAO;
@@ -13,7 +20,8 @@ public class MovieWorldTicketBO {
 	
 	public MovieWorldTicketBO(){}
 	
-	public MovieWorldTicketBO(MovieWorldTicketDAO movieWorldTicketDAO, Map<String, Integer> ticketPassValueMap){
+	@Autowired
+	public MovieWorldTicketBO(MovieWorldTicketDAO movieWorldTicketDAO, @Value("#{ticketPassValueMap}") Map<String, Integer> ticketPassValueMap){
 		this.movieWorldTicketDAO = movieWorldTicketDAO;
 		this.ticketPassValueMap = ticketPassValueMap;
 	}
